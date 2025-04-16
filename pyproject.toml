@@ -1,0 +1,26 @@
+[project]
+name = "the-martec-multi-agent-hub"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115.11",
+    "langchain-openai==0.3.8",
+    "langchain-aws==0.2.18",
+    "langchain-google-genai==2.1.2",
+    "python-dotenv==1.0.1",
+    "langchain==0.3.21",
+    "langgraph==0.3.18",
+    "langgraph-swarm==0.0.9",
+]
+
+[dependency-groups]
+dev = [
+    "alembic>=1.15.1",
+    "faker>=37.0.2",
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+    "ruff>=0.11.0",
+]
+
+[tool.ruff.lint]
+ignore = ["E402"]

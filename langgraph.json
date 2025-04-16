@@ -1,0 +1,12 @@
+{
+    "dependencies": [
+        "."
+    ],
+    "graphs": {
+        "employer_branding": "./app/workflows/employer_branding/agent.py:workflow",
+        "employer_branding_v3": "./app/workflows/employer_branding_v3/agent.py:workflow",
+        "talent_acquisition": "./app/workflows/talent_acquisition/agent.py:workflow",
+        "react_agent": "./app/workflows/react_agent/agent.py:graph"
+    },
+    "env": "./.env"
+}
