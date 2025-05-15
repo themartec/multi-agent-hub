@@ -1,19 +1,12 @@
 import json
-from langchain_core.messages import ToolMessage, SystemMessage
+from langchain_core.messages import ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import MessagesState, StateGraph, END
 from langchain_openai import ChatOpenAI
-from dotenv import load_dotenv
 from langgraph.checkpoint.memory import InMemorySaver
 
 from app.workflows.react_agent.utils.tools import tools
 from app.workflows.react_agent.configuration import Configuration
-
-
-load_dotenv()
-
-# model = ChatOpenAI(model="gpt-4o-mini")
-# model = model.bind_tools(tools)
 
 tools_by_name = {tool.name: tool for tool in tools}
 

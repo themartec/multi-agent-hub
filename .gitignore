@@ -178,3 +178,5 @@ cython_debug/
 /app/workflows/eb_swarm/
 .idea/
 .DS_Store
+environment/.dev.env
+chroma_db

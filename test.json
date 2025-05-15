@@ -1,0 +1,68 @@
+{
+    "status": "RAW",
+    "asset_upload_type": "PLAIN_TEXT",
+    "publish_link": "",
+    "headline": "Jack test 33333",
+    "content": "content test 3333",
+    "category_id": "574a809f-6125-4e44-8d26-3e732b76b9f8",
+    "file_link": "",
+    "publish_date": null,
+    "tag_selection": [
+        {
+            "id": "dcf6baac-dce3-450b-b5d0-ba09466b11ce",
+            "name": "Ho Chi Minh",
+            "group": "LOCATION"
+        },
+        {
+            "id": "e688406e-24a2-4fa3-9b6e-18b48fff6912",
+            "name": "Melbourne",
+            "group": "LOCATION"
+        },
+        {
+            "id": "5dd69bcf-614a-4731-a6fc-2d40f21c6b06",
+            "name": "AI Engineer",
+            "group": "TEAM"
+        },
+        {
+            "id": "6d675612-3480-4f50-878e-9ca376b9384d",
+            "name": "Customer Service",
+            "group": "TEAM"
+        },
+        {
+            "id": "cb214f2d-1661-4f41-97a7-b97cbdd27ee5",
+            "name": "Vietnam",
+            "group": "COUNTRY"
+        },
+        {
+            "id": "c5b8c73c-2926-4143-9192-32416cd788b7",
+            "name": "Australia",
+            "group": "COUNTRY"
+        },
+        {
+            "id": "6f8919c6-48b0-4fef-9c41-b5c59378a4a5",
+            "name": "Engineer",
+            "group": "ROLE"
+        },
+        {
+            "id": "4ed44e03-44bc-4938-8c0c-54a057790a00",
+            "name": "QA",
+            "group": "ROLE"
+        },
+        {
+            "id": "5dfe72a0-1c9a-43f9-babc-b8b6b15cf6f0",
+            "name": "Facebook",
+            "group": "CUSTOM_TAG"
+        },
+        {
+            "id": "96dc5922-831d-4041-897a-69618545fc5e",
+            "name": "Inside Look Into Team",
+            "group": "CUSTOM_TAG"
+        },
+        {
+            "id": "c4bc1133-8de4-4c93-8dd0-3948cb5ee55f",
+            "name": "new tag",
+            "group": "TOPIC"
+        }
+    ],
+    "content_type": "WRITTEN"
+}
