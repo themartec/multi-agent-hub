@@ -174,3 +174,7 @@ cython_debug/
 .pypirc
 
 .langgraph_api
+.vercel
+/app/workflows/eb_swarm/
+.idea/
+.DS_Store
