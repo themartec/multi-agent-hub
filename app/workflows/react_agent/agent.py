@@ -90,4 +90,4 @@ workflow.add_conditional_edges(
 workflow.add_edge("tools", "agent")
 
 # Now we can compile and visualize our graph
-graph = workflow.compile(checkpointer=InMemorySaver())
+graph = workflow.compile()
