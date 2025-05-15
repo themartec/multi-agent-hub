@@ -38,12 +38,12 @@ def call_model(
     config: RunnableConfig,
 ):
     configuration = Configuration.from_runnable_config(config)
-    
+
     model = ChatOpenAI(model=configuration.model).bind_tools(tools)
-    
+
     # this is similar to customizing the create_react_agent with 'prompt' parameter, but is more flexible
     system_prompt = configuration.system_prompt
-    
+
     response = model.invoke([system_prompt] + state["messages"], config)
     # We return a list, because this will get added to the existing list
     return {"messages": [response]}
