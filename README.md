@@ -17,3 +17,7 @@ pip install -e .
 ```bash
 langgraph dev
 ```
+4. Simulate client's data
+```bash
+python test_api.py
+```
