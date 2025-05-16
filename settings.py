@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     AUTHEN_TOKEN: str
     USER_PWD: str
     USER_NAME: str
+    PROXY_USER: str
+    PROXY_PWD: str
     model_config = SettingsConfigDict(env_file=('.env', '.test.env', '.dev.env'), env_file_encoding='utf-8',
                                       extra='ignore')
 
