@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     LANGSMITH_API_KEY: str
     AUTHEN_TOKEN: str
 
-    model_config = SettingsConfigDict(env_file=('.prod.env', '.test.env', '.dev.env'), env_file_encoding='utf-8', extra='ignore')
+    model_config = SettingsConfigDict(env_file=('.env', '.test.env', '.dev.env'), env_file_encoding='utf-8', extra='ignore')
 
 
 @lru_cache
