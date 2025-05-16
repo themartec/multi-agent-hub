@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from youtube_transcript_api import YouTubeTranscriptApi
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from app.schemas.models import OpenAIModelName
 from app.schemas.settings import EnglishStyle
 
@@ -62,13 +62,14 @@ def youtube_transcribe(video_link: str):
 
                 after_time = datetime.datetime.now()
                 delta_time = (after_time - before_time).total_seconds()
-                print(f"delta_time: {delta_time}")
+                print(f"[Debug] Youtube Scrape time: {delta_time}")
                 return final_output
             else:
                 return "Please check the video link if it is valid Youtube link."
         except:
+            print(f"[Debug] Youtube Scrape Retry: {counter}")
             final_output = None
-            time.sleep(1)
+            time.sleep(3)
 
 
 #
@@ -113,7 +114,11 @@ def _format_youtube_description(description: str):
     output_format = re.sub(r"\.\.more.+", "", f"Description: {output_format}")
     output_format = re.sub(r"Transcript.+", "", f"{output_format}")
     output_format = re.sub(r"\[https.+?\)", "", f"{output_format}")
+    before_time = datetime.datetime.now()
     output_format = translate(output_format, EnglishStyle.AMERICAN)
+    after_time = datetime.datetime.now()
+    delta_time = (after_time - before_time).total_seconds()
+    print(f"[Debug] translate time: {delta_time}")
     return output_format
 
 

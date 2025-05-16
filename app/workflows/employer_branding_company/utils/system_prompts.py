@@ -395,8 +395,8 @@ Instruction
 ## 2. TASK INPUTS
 
 - There are variety of inputs for the task that you need to work with.
-- URL: If the user shares a URL → Use get_content_from_url tool to scrap the content. 
-    + If you can scrap content, share a summary of the content, and then continue the tasks.
+- URL: If the user shares a URL or even YouTube link → Use get_content_from_url tool to scrap the content. 
+    + After scraping done, if scrap content is available, share a summary of the content, and then continue the tasks.
     + If you failed to scrap content, explicitly share with the user about the issue and ask them to provide 
     alternatives.
 - Raw text: If user gives raw text, say: “Based on content from your given input,”
