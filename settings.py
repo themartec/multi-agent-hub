@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     JINA_API_KEY: str
     # LANGSMITH_API_KEY: str
     AUTHEN_TOKEN: str
-
+    USER_PWD: str
+    USER_NAME: str
     model_config = SettingsConfigDict(env_file=('.env', '.test.env', '.dev.env'), env_file_encoding='utf-8',
                                       extra='ignore')
 

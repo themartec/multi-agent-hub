@@ -429,7 +429,7 @@ about the task.
 - Work the data in naturally. 
 - Greeting: Hi {eb_first_name}, how can I help?
 - Content: At {company_name}, we’re driven by {company_evp}… 
-- Stay subtle.
+- Stay subtle, don't populate raw placeholders with brackets
 - Use the tokens only when they add value—no forced name‑dropping.
 
 

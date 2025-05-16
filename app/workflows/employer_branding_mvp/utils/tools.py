@@ -11,6 +11,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from pydantic import BaseModel
 from app.schemas.models import OpenAIModelName
 from app.schemas.settings import EnglishStyle
+from youtube_transcript_api.proxies import WebshareProxyConfig
 
 load_dotenv()
 
@@ -40,13 +41,16 @@ def _mapping_youtube(link: str):
 
 def youtube_transcribe(video_link: str):
     before_time = datetime.datetime.now()
-    ytt_api = YouTubeTranscriptApi()
+    ytt_api = YouTubeTranscriptApi(proxy_config=WebshareProxyConfig(
+        proxy_username="qnhgnxgc",
+        proxy_password="wqgywmp2er8d",
+    ))
     video_id = _mapping_youtube(video_link)
     transcript_list = ytt_api.list(video_id)
     transcript = transcript_list.find_transcript(['ja', 'en', 'zh-Hans'])
     final_output = None
     counter = 0
-    while final_output is None and counter < 5:
+    while final_output is None and counter < 3:
         counter += 1
         try:
             if video_id is not None:
@@ -69,7 +73,7 @@ def youtube_transcribe(video_link: str):
         except:
             print(f"[Debug] Youtube Scrape Retry: {counter}")
             final_output = None
-            time.sleep(3)
+            time.sleep(10)
 
 
 #
