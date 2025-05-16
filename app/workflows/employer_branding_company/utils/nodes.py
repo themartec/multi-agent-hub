@@ -5,6 +5,7 @@ from langchain_core.runnables import RunnableConfig
 
 from app.helpers.get_brand_guidelines import get_brand_guidelines, get_company_info
 from app.helpers.library_helpers import create_library_item
+from app.schemas.settings import EnglishStyle
 from app.workflows.employer_branding_company.utils.system_prompts import get_agent_system_message
 from app.workflows.employer_branding_company.utils.state import State
 from app.workflows.employer_branding_company.utils.tools import tools
@@ -17,19 +18,24 @@ tools_by_name = {tool.name: tool for tool in tools}
 
 model = ChatOpenAI(model="gpt-4o", api_key=settings.OPENAI_API_KEY)
 
+
 def get_user_info(state: State):
     tovs, compliance_content, evps = get_brand_guidelines(settings.AUTHEN_TOKEN)
     first_name, email, company_name = get_company_info(settings.AUTHEN_TOKEN)
-    
+
+    english_type = EnglishStyle.AMERICAN
+
     return {
         "tovs": tovs,
         "compliance_content": compliance_content,
         "evps": evps,
         "first_name": first_name,
         "email": email,
-        "company_name":company_name
+        "company_name": company_name,
+        "english_type": english_type
     }
-    
+
+
 def first_route(state: State):
     if len(state["messages"]) <= 1:
         return "yes"
@@ -37,7 +43,8 @@ def first_route(state: State):
         return "save_to_library"
     else:
         return "no"
-    
+
+
 # Define our tool node
 def tool_node(state: State):
     outputs = []
@@ -52,25 +59,27 @@ def tool_node(state: State):
         )
     return {"messages": outputs}
 
+
 # Define the node that calls the model
 def call_model(
-    state: State,
-    config: RunnableConfig,
+        state: State,
+        config: RunnableConfig,
 ):
     tool_model = model.bind_tools(tools)
     # this is similar to customizing the create_react_agent with 'prompt' parameter, but is more flexible
-    system_prompt = SystemMessage(get_agent_system_message("employer_branding").format(
-            eb_first_name=state['first_name'],
-            eb_email=state['email'],
-            company_name=state['company_name'],
-            company_tone=state['tovs'],
-            brand_compliance=state['compliance_content'],
-            company_evp=state['evps']
-        )
+    system_prompt = SystemMessage(get_agent_system_message("employer_branding_mvp_plus").format(
+        eb_first_name=state['first_name'],
+        eb_email=state['email'],
+        company_name=state['company_name'],
+        company_tone=state['tovs'],
+        brand_compliance=state['compliance_content'],
+        company_evp=state['evps'],
+        english_type=state['english_type']
     )
-    
+    )
+
     artifact_id = "artifact_ui_" + str(uuid.uuid4())
-    
+
     response = tool_model.invoke([system_prompt] + state["messages"], config)
     # We return a list, because this will get added to the existing list
     return {
@@ -90,6 +99,7 @@ def call_model(
         ]
     }
 
+
 # Define the conditional edge that determines whether to continue or not
 def should_continue(state: State):
     messages = state["messages"]
@@ -100,15 +110,17 @@ def should_continue(state: State):
     # Otherwise if there is, we continue
     else:
         return "continue"
-    
+
+
 def save_to_library(state: State):
     state["messages"][-1].content = "Please help me save the content into the library"
     structured_model = model.with_structured_output(AgentResponse).with_config(
         config={"tags": ["langsmith:nostream"]}
     )
     system_prompt = get_agent_system_message("content_extraction")
-    response = structured_model.invoke([SystemMessage(content=system_prompt), HumanMessage(content=state["messages"][-2].content)])
-    
+    response = structured_model.invoke(
+        [SystemMessage(content=system_prompt), HumanMessage(content=state["messages"][-2].content)])
+
     payload = {
         "status": "RAW",
         "asset_upload_type": "PLAIN_TEXT",
@@ -120,7 +132,7 @@ def save_to_library(state: State):
         "publish_date": None,
         "tag_selection": []
     }
-    
+
     create_library_item(settings.AUTHEN_TOKEN, payload)
-    
+
     return {"messages": [AIMessage("Done!")]}

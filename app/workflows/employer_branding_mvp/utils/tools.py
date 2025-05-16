@@ -8,9 +8,10 @@ from dotenv import load_dotenv
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from youtube_transcript_api import YouTubeTranscriptApi
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from app.schemas.models import OpenAIModelName
 from app.schemas.settings import EnglishStyle
+from youtube_transcript_api.proxies import WebshareProxyConfig
 
 load_dotenv()
 
@@ -39,14 +40,19 @@ def _mapping_youtube(link: str):
 
 
 def youtube_transcribe(video_link: str):
+    proxy_config = WebshareProxyConfig(
+        proxy_username="qnhgnxgc",
+        proxy_password="wqgywmp2er8d",
+    )
+
     before_time = datetime.datetime.now()
-    ytt_api = YouTubeTranscriptApi()
+    ytt_api = YouTubeTranscriptApi(proxy_config=proxy_config)
     video_id = _mapping_youtube(video_link)
     transcript_list = ytt_api.list(video_id)
     transcript = transcript_list.find_transcript(['ja', 'en', 'zh-Hans'])
     final_output = None
     counter = 0
-    while final_output is None and counter < 5:
+    while final_output is None and counter < 3:
         counter += 1
         try:
             if video_id is not None:
@@ -62,13 +68,14 @@ def youtube_transcribe(video_link: str):
 
                 after_time = datetime.datetime.now()
                 delta_time = (after_time - before_time).total_seconds()
-                print(f"delta_time: {delta_time}")
+                print(f"[Debug] Youtube Scrape time: {delta_time}")
                 return final_output
             else:
                 return "Please check the video link if it is valid Youtube link."
         except:
+            print(f"[Debug] Youtube Scrape Retry: {counter}")
             final_output = None
-            time.sleep(1)
+            time.sleep(10)
 
 
 #
@@ -113,7 +120,11 @@ def _format_youtube_description(description: str):
     output_format = re.sub(r"\.\.more.+", "", f"Description: {output_format}")
     output_format = re.sub(r"Transcript.+", "", f"{output_format}")
     output_format = re.sub(r"\[https.+?\)", "", f"{output_format}")
+    before_time = datetime.datetime.now()
     output_format = translate(output_format, EnglishStyle.AMERICAN)
+    after_time = datetime.datetime.now()
+    delta_time = (after_time - before_time).total_seconds()
+    print(f"[Debug] translate time: {delta_time}")
     return output_format
 
 

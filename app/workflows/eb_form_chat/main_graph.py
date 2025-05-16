@@ -16,7 +16,7 @@ def route_after_interrupt(state):
 def human_edit(state):
     messages = state["messages"]
     human_msg = messages[-2].content
-    print(f"human_msg: {human_msg}")
+    # print(f"human_msg: {human_msg}")
     msg_list = []
     for message in messages:
         if isinstance(message, HumanMessage):
