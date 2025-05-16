@@ -9,3 +9,4 @@ class State(MessagesState):
     email: str
     company_name: str
     ui: List[dict]
+    english_type: str

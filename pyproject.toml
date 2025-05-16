@@ -14,7 +14,7 @@ dependencies = [
     "langgraph-cli[inmem]",
     "pydantic-settings==2.1.0",
     "langchain-chroma==0.2.3",
-    "youtube-transcript-api==0.6.0"
+    "youtube-transcript-api==1.0.3"
 ]
 
 [dependency-groups]
