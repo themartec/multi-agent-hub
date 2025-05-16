@@ -40,11 +40,13 @@ def _mapping_youtube(link: str):
 
 
 def youtube_transcribe(video_link: str):
-    before_time = datetime.datetime.now()
-    ytt_api = YouTubeTranscriptApi(proxy_config=WebshareProxyConfig(
+    proxy_config = WebshareProxyConfig(
         proxy_username="qnhgnxgc",
         proxy_password="wqgywmp2er8d",
-    ))
+    )
+
+    before_time = datetime.datetime.now()
+    ytt_api = YouTubeTranscriptApi(proxy_config=proxy_config)
     video_id = _mapping_youtube(video_link)
     transcript_list = ytt_api.list(video_id)
     transcript = transcript_list.find_transcript(['ja', 'en', 'zh-Hans'])
