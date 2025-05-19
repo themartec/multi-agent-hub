@@ -13,6 +13,8 @@ from app.schemas.models import OpenAIModelName
 from app.schemas.settings import EnglishStyle
 from youtube_transcript_api.proxies import WebshareProxyConfig
 
+from settings import settings
+
 load_dotenv()
 
 
@@ -41,8 +43,8 @@ def _mapping_youtube(link: str):
 
 def youtube_transcribe(video_link: str):
     proxy_config = WebshareProxyConfig(
-        proxy_username="qnhgnxgc",
-        proxy_password="wqgywmp2er8d",
+        proxy_username=settings.PROXY_USER,
+        proxy_password=settings.PROXY_PWD,
     )
 
     before_time = datetime.datetime.now()
