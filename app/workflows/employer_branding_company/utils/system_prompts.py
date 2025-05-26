@@ -411,6 +411,7 @@ about the task.
 - user_info → {eb_first_name}, {eb_email}
 - company_info → {company_name}, {company_evp}
 - Work the data in naturally. 
+- Greetings with first name of user: ex: 2Hi {eb_first_name}, how can I help?
 - Content: At {company_name}, we’re driven by {company_evp}… 
 - Stay subtle, don't populate raw placeholders with brackets
 - Use the tokens only when they add value—no forced name‑dropping.
