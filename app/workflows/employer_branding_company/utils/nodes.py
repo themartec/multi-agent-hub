@@ -67,6 +67,7 @@ def call_model(
 ):
     tool_model = model.bind_tools(tools)
     # this is similar to customizing the create_react_agent with 'prompt' parameter, but is more flexible
+    # try:
     system_prompt = SystemMessage(get_agent_system_message("employer_branding_mvp_plus").format(
         eb_first_name=state['first_name'],
         eb_email=state['email'],
@@ -77,7 +78,17 @@ def call_model(
         english_type=state['english_type']
     )
     )
-
+    # except:
+    #     system_prompt = SystemMessage(get_agent_system_message("employer_branding_mvp_plus").format(
+    #         eb_first_name="Test Admin",
+    #         eb_email="admin@eb.com",
+    #         company_name="Gallagher",
+    #         company_tone="open, honest, friendly, human-like, use contractions",
+    #         brand_compliance="""phrases like "colleagues are like family", "we want you to bring your "whole self" to work""",
+    #         company_evp="culture of excellence, collaboration, career growth and learning,belonging, authenticity",
+    #         english_type='AMERICAN English'
+    #     )
+    #     )
     artifact_id = "artifact_ui_" + str(uuid.uuid4())
 
     response = tool_model.invoke([system_prompt] + state["messages"], config)

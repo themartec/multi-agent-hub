@@ -12,7 +12,8 @@ instruction_alignment will be:
 </Rubric>
 
 <Instructions>
-Please carefully check each factor of input like task description (generate Employee story or Team story,...), detail instruction, topic,...
+Please carefully check each factor of input like task description (generate Employee story or Team story,...), 
+detail instruction, topic, tone, audience, and so on...
 It is good if you justification/reasoning mention case by case as bullet point to review
 </Instructions>
 
