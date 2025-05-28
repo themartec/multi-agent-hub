@@ -10,3 +10,4 @@ class State(MessagesState):
     company_name: str
     ui: List[dict]
     english_type: str
+    knowledge_groups: List[str]

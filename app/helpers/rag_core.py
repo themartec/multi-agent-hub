@@ -1,73 +1,42 @@
-from typing import Optional, List, Tuple
-from dotenv import load_dotenv
-from openai import OpenAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from typing import Optional, List
+from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-from pydantic import BaseModel
+import cohere
 
-# Load environment variables
-load_dotenv()
+from settings import settings
 
 class RAGCore:
     def __init__(self):
-        self.client = OpenAI()
-        self.embeddings = OpenAIEmbeddings()
+        self.embeddings = OpenAIEmbeddings(model="text-embedding-3-small", api_key=settings.OPENAI_API_KEY)
         self.vector_store = None
 
-    def _translate_to_english(self, text: str) -> str:
-        """Translate text to English using LLM"""
-        translation_prompt = ChatPromptTemplate.from_messages([
-            ("system", """You are a professional translator. Translate the given text to English.
-            Rules:
-            1. Maintain the original meaning and technical terms
-            2. Keep the same formatting and structure
-            3. If the text is already in English, return it unchanged
-            4. Be precise and accurate in technical translations"""),
-            ("user", "Translate this text to English if it's not already in English:\n{text}")
-        ])
-        
-        llm = ChatOpenAI(
-            model="gpt-4o",
-            temperature=0
-        )
-        
-        try:
-            response = llm.invoke(
-                translation_prompt.format(
-                    text=text
-                )
-            )
-            return response.content
-        except Exception as e:
-            print(f"Translation error: {e}")
-            return text  # Return original text if translation fails
-
     def process_document_list(self, documents: List[List], persist_directory: str = "./chroma_db", translate_to_english: bool = False) -> Chroma:
-        """Process a list of documents where each document is [index, category, text]"""
+        """Process a list of documents where each document is [idx, knowledge_id, final_content, insight]"""
         print("\nProcessing documents...")
         
         processed_docs = []
+        count = 0
         for doc in documents:
-            if len(doc) != 2:
+            if len(doc) != 4:
                 print(f"Skipping invalid document format: {doc}")
                 continue
                 
-            headline, final_content = doc
+            idx, knowledge_id, final_content, insight = doc
             
             # Create document with metadata
             doc_with_metadata = Document(
-                page_content=final_content,
+                page_content=insight,
                 metadata={
-                    "headline": headline
+                    "idx": idx,
+                    "knowledge_id": knowledge_id,
+                    "final_content": final_content
                 }
             )
             processed_docs.append(doc_with_metadata)
-            print(f"Processed document {headline}")
+            print(f"Processed document {idx}. Count: {count}")
+            count += 1
         
         # Create and return the vector store
         self.vector_store = Chroma.from_documents(
@@ -92,40 +61,12 @@ class RAGCore:
         )
         return self.vector_store
 
-class RelevanceResponse(BaseModel):
-    """Structure for relevance scoring response"""
-    is_relevant: bool
-    confidence: float
-    explanation: str
-
 class QueryEngine:
-    def __init__(self, vector_store: Optional[Chroma] = None, initial_k: int = 5):
+    def __init__(self, vector_store: Optional[Chroma] = None, initial_k: int = 3):
         self.vector_store = vector_store
         self.initial_k = initial_k  # Number of initial documents to retrieve
+        self.cohere_client = cohere.ClientV2(api_key=settings.COHERE_API_KEY)
         
-        # Create the relevance checking prompt
-        self.relevance_prompt = ChatPromptTemplate.from_messages([
-            ("system", """You are an expert at determining whether a article is relevant to a given question.
-            Analyze the content carefully and determine if it contains information that would help answer the question.
-            Consider both direct answers and contextually relevant information."""),
-            ("user", """Question: {question}
-
-Article:
-[Headline: {headline}]
-{content}
-
-Determine if this article is relevant to answering the question. Provide:
-1. is_relevant: true/false
-2. confidence: Score between 0 and 1
-3. explanation: Brief explanation of your decision""")
-        ])
-        
-        # Initialize the LLMs
-        self.relevance_llm = ChatOpenAI(
-            model="gpt-4o",
-            temperature=0,
-        ).with_structured_output(RelevanceResponse)
-
     def set_vector_store(self, vector_store: Chroma):
         """Set the vector store to use for queries"""
         self.vector_store = vector_store
@@ -136,67 +77,59 @@ Determine if this article is relevant to answering the question. Provide:
         unique_docs = []
         
         for doc in docs:
-            headline = doc.metadata.get("headline")
-            if headline not in seen_indices:
-                seen_indices.add(headline)
+            idx = doc.metadata.get("idx")
+            if idx not in seen_indices:
+                seen_indices.add(idx)
                 unique_docs.append(doc)
         
         return unique_docs
 
-    def _check_relevance(self, question: str, doc_content: str, headline: str) -> Tuple[bool, float]:
-        """Check if a document is relevant to the question using LLM"""
+    def _check_relevance(self, question: str, docs: list[str], relevance_threshold):
+        """Check if a document is relevant to the question using cohere"""
         try:
-            response = self.relevance_llm.invoke(
-                self.relevance_prompt.format(
-                    question=question,
-                    headline=headline,
-                    content=doc_content
-                )
+            response = self.cohere_client.rerank(
+                model="rerank-v3.5",
+                query=question,
+                documents=docs,
+                top_n=5,
             )
-            print(f"Relevant: {response.is_relevant}, Confidence: {response.confidence}")
-            print(f"Explanation: {response.explanation}")
-            return response.is_relevant, response.confidence, response.explanation
+            print(response.results)
+            return [result.index for result in response.results if result.relevance_score >= relevance_threshold]
+            
         except Exception as e:
             print(f"Error in relevance checking: {e}")
-            return False, 0.0
+            return []
 
-    def query(self, question: str, relevance_threshold: float = 0.7):
+    def query(self, question: str, relevance_threshold: float = 0.5, filter = None):
         """Query the RAG system with LLM re-ranking. Returns both the answer and the sources used."""
         if not self.vector_store:
             raise ValueError("Vector store not set. Please set a vector store before querying.")
         
         # Retrieve and deduplicate initial set of documents
-        initial_docs = self.vector_store.similarity_search(question, k=self.initial_k)
-
+        initial_docs = self.vector_store.similarity_search(question, k=self.initial_k, filter=filter)
         retrieved_docs = self._deduplicate_docs(initial_docs)
         
-        # Format context with document metadata and check relevance
-        sources = []
+        if not retrieved_docs:
+            return []
         
-        for doc in retrieved_docs:
-            metadata = doc.metadata
-            # Check relevance using LLM
-            is_relevant, confidence, explanation = self._check_relevance(
-                question,
-                doc.page_content,
-                metadata["headline"],
-            )
-            
-            # Only include relevant documents that meet the threshold
-            if is_relevant and confidence >= relevance_threshold:
-                source_info = {
-                    "headline": str(metadata["headline"]),
-                    "final_content": doc.page_content,
-                    "explanation": explanation
-                }
-                sources.append(source_info)
-                
+        metadatas = [doc.metadata for doc in retrieved_docs]
+        page_contents = [doc.page_content for doc in retrieved_docs]
+        
+        relevant_indexes = self._check_relevance(question, page_contents, relevance_threshold)
+        # relevant_indexes = range(len(metadatas))
+        
+        sources = [
+            {
+                "idx": str(metadatas[index]["idx"]),
+                "knowledge_id": str(metadatas[index]["knowledge_id"]),
+                "final_content": metadatas[index]["final_content"]
+            } for index in relevant_indexes
+        ]
+
         return sources
 
-def query_documents(question: str):
+def query_documents(question: str, knowledge_groups: list[str]):
     """Query the processed documents"""
-    # Load environment variables
-    load_dotenv()
     
     # Initialize components
     rag_core = RAGCore()
@@ -213,6 +146,10 @@ def query_documents(question: str):
     
     # Process query
     print(f"\nQuestion: {question}")
-    sources = query_engine.query(question)
+    sources = []
+    for knowledge_id in knowledge_groups:
+        sources.extend(query_engine.query(question, filter={"knowledge_id": knowledge_id}))
+    
+    print(sources)
     
     return sources
