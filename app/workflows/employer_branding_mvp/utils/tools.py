@@ -45,8 +45,8 @@ def _mapping_youtube(link: str):
 
 def youtube_transcribe(video_link: str):
     proxy_config = WebshareProxyConfig(
-        proxy_username="evlvlqqj",
-        proxy_password="a85ot1at3a6q",
+        proxy_username=settings.PROXY_USER,
+        proxy_password=settings.PROXY_PWD,
     )
 
     before_time = datetime.datetime.now()
