@@ -12,7 +12,15 @@ class Settings(BaseSettings):
     USER_PWD: str
     USER_NAME: str
     # PROXY_USER: str
-    # PROXY_PWD: str
+    # PROXY_PWD: 
+    
+    # AWS RDS PostgreSQL connection details
+    DB_HOST: str
+    DB_PORT: str
+    DB_USER: str
+    DB_PASSWORD: str
+    DB_NAME: str
+    
     model_config = SettingsConfigDict(env_file=('.env', '.test.env', '.dev.env'), env_file_encoding='utf-8',
                                       extra='ignore')
 

@@ -6,7 +6,8 @@
         "react_agent": "./app/workflows/react_agent/agent.py:graph",
         "employer_branding_mvp": "./app/workflows/employer_branding_mvp/agent.py:workflow",
         "eb_form": "./app/workflows/eb_form_chat/main_graph.py:graph_form",
-        "employer_branding_company": "./app/workflows/employer_branding_company/agent.py:workflow"
+        "employer_branding_company": "./app/workflows/employer_branding_company/agent.py:workflow",
+        "find": "./app/workflows/find/agent.py:workflow"
     },
     "env": "environment/.dev.env"
 }
