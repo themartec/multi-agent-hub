@@ -80,7 +80,7 @@ def youtube_transcribe(video_link: str):
         except:
             print(f"[Debug] Youtube Scrape Retry: {counter}")
             final_output = None
-            time.sleep(3)
+            time.sleep(10)
 
 
 def _format_youtube_description(description: str):
