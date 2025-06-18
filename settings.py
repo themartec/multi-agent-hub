@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     USER_NAME: str
     PROXY_USER: str
     PROXY_PWD: str
+    BUILD_ENVIRONMENT: str
     model_config = SettingsConfigDict(env_file=('.env', '.test.env', '.dev.env'), env_file_encoding='utf-8',
                                       extra='ignore')
 
