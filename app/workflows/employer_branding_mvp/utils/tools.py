@@ -9,6 +9,8 @@ from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from youtube_transcript_api import YouTubeTranscriptApi
 from pydantic import BaseModel
+
+from app.helpers.get_brand_guidelines import TheMartecSecret
 from app.schemas.models import OpenAIModelName
 from app.schemas.settings import EnglishStyle
 from youtube_transcript_api.proxies import WebshareProxyConfig
@@ -50,11 +52,12 @@ def youtube_transcribe(video_link: str):
     before_time = datetime.datetime.now()
     ytt_api = YouTubeTranscriptApi(proxy_config=proxy_config)
     video_id = _mapping_youtube(video_link)
+    print(f"video_id: {video_id}")
     transcript_list = ytt_api.list(video_id)
     transcript = transcript_list.find_transcript(['ja', 'en', 'zh-Hans'])
     final_output = None
     counter = 0
-    while final_output is None and counter < 3:
+    while final_output is None and counter < 2:
         counter += 1
         try:
             if video_id is not None:
@@ -80,40 +83,6 @@ def youtube_transcribe(video_link: str):
             time.sleep(10)
 
 
-#
-# def download_audio_from_url(raw_url: str):
-#     response = requests.get(raw_url, stream=True)
-#     response.raise_for_status()  # Raise an error if the download fails
-#     with open("test_video_demo.mp4", 'wb') as f:
-#         for chunk in response.iter_content(chunk_size=8192):
-#             f.write(chunk)
-
-
-# @tool
-# def get_transcribe_from_youtube(raw_url: str):
-#     """Use this to crawl the content when user input the URL"""
-#     if 'youtube' in raw_url:
-#         return youtube_transcribe(raw_url)
-#     else:
-#         return None
-#     # print(f"raw_url: {raw_url}")
-#     # # download_audio_from_url(raw_url)
-#     # time.sleep(1)
-#     # client = OpenAI()
-#     # url = "test_video_demo.mp4"
-#     # audio_file = open(url, "rb")
-#     # init_time = datetime.datetime.now()
-#     # transcription = client.audio.transcriptions.create(
-#     #     model="whisper-1",
-#     #     file=audio_file,
-#     #     response_format="text"
-#     # )
-#     # cur_time = datetime.datetime.now()
-#     # delta_time = cur_time - init_time
-#     # print(f"delta_time: {delta_time.total_seconds()} seconds")
-#     #
-#     # return transcription
-
 def _format_youtube_description(description: str):
     if description is None:
         return None
@@ -136,6 +105,18 @@ def _scrape_by_jina(raw_url: str):
         "Authorization": f'Bearer {os.getenv("JINA_API_KEY")}'
     }
     response = requests.get(url, headers=headers)
+    return response.text
+
+
+def get_content(raw_url: str):
+    endpoint = f"http://api{settings.BUILD_ENVIRONMENT}.themartec.com/v1/content-scrape/transcript"
+    token = TheMartecSecret().token_martec
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f'Bearer {token}'
+    }
+    response = requests.get(endpoint, headers=headers, params={"url": raw_url})
+
     return response.text
 
 
