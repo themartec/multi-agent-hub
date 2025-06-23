@@ -1,7 +1,7 @@
 from langgraph.graph import StateGraph, START, END
 
 from app.workflows.employer_branding_company.utils.nodes import (
-    get_user_info,
+    # get_user_info,
     call_model,
     tool_node,
     first_route,
@@ -13,7 +13,7 @@ from app.workflows.employer_branding_company.utils.state import State
 
 graph_builder = StateGraph(State)
 
-graph_builder.add_node("get_user_info", get_user_info)
+# graph_builder.add_node("get_user_info", get_user_info)
 graph_builder.add_node("agent", call_model)
 graph_builder.add_node("tools", tool_node)
 graph_builder.add_node("save_to_library", save_to_library)
@@ -23,12 +23,13 @@ graph_builder.add_conditional_edges(
     START,
     first_route,
     {
-        "yes": "get_user_info",
+        "yes": "agent",
         "no": "agent",
         "save_to_library": "save_to_library"
     }
 )
-graph_builder.add_edge("get_user_info", "agent")
+graph_builder.set_entry_point("agent")
+# graph_builder.add_edge("get_user_info", "agent")
 # We now add a conditional edge
 graph_builder.add_conditional_edges(
     # First, we define the start node. We use `agent`.
