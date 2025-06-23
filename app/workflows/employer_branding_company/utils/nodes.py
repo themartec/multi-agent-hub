@@ -67,15 +67,16 @@ def call_model(
 ):
     tool_model = model.bind_tools(tools)
     # this is similar to customizing the create_react_agent with 'prompt' parameter, but is more flexible
-    system_prompt = SystemMessage(get_agent_system_message("employer_branding_mvp_plus").format(
-        eb_first_name=state['first_name'],
-        eb_email=state['email'],
-        company_name=state['company_name'],
-        company_tone=state['tovs'],
-        brand_compliance=state['compliance_content'],
-        company_evp=state['evps'],
-        english_type=state['english_type']
-    )
+    system_prompt = SystemMessage(get_agent_system_message("employer_branding_mvp_v3")
+    # .format(
+    #     eb_first_name=state['first_name'],
+    #     eb_email=state['email'],
+    #     company_name=state['company_name'],
+    #     company_tone=state['tovs'],
+    #     brand_compliance=state['compliance_content'],
+    #     company_evp=state['evps'],
+    #     english_type=state['english_type']
+    # )
     )
 
     artifact_id = "artifact_ui_" + str(uuid.uuid4())
