@@ -123,10 +123,10 @@ def get_content(raw_url: str):
 def youtube_transcribe_by_langgraph(raw_url):
     loader = YoutubeLoader.from_youtube_url(
         raw_url, add_video_info=False,
-        language=["en", "ja"],
-        translation="en"
+        language=["en", "ja"]
     )
     return loader.load()
+
 
 def youtube_transcribe_by_martec_api(raw_url):
     endpoint = f"https://apidev.themartec.com/v1/content-scrape/transcript"
@@ -139,15 +139,17 @@ def youtube_transcribe_by_martec_api(raw_url):
 
     return response.text
 
+
 @tool
 def get_content_from_url(raw_url: str):
     """Use this to crawl the content when user input the URL"""
     if 'youtube' in raw_url or 'youtu.be' in raw_url:
         try:
             youtube_trans = youtube_transcribe(raw_url)
+            print(f"youtube_trans 1: {youtube_trans}")
         except:
-            youtube_trans = youtube_transcribe_by_martec_api(raw_url)
-            print(f"youtube_trans: {youtube_trans}")
+            youtube_trans = youtube_transcribe_by_langgraph(raw_url)
+            print(f"youtube_trans 2: {youtube_trans}")
         output_format = _format_youtube_description(_scrape_by_jina(raw_url))
         return f"**Video Transcript**:\n{youtube_trans}\n**Video Description**: {output_format}"
     else:
