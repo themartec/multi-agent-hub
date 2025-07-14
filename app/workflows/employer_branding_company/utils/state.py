@@ -7,6 +7,7 @@ class State(MessagesState):
     evps: str
     first_name: str
     email: str
+    company_id: str
     company_name: str
     ui: List[dict]
     english_type: str

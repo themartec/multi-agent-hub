@@ -16,28 +16,18 @@ import uuid
 
 tools_by_name = {tool.name: tool for tool in tools}
 
-model = ChatOpenAI(model="gpt-4o", api_key=settings.OPENAI_API_KEY)
-
+model = ChatOpenAI(model="gpt-4.1", api_key=settings.OPENAI_API_KEY)
 
 def get_user_info(state: State):
-    tovs, compliance_content, evps = get_brand_guidelines(settings.AUTHEN_TOKEN)
-    first_name, email, company_name = get_company_info(settings.AUTHEN_TOKEN)
-
-    english_type = EnglishStyle.AMERICAN
+    company_id=state["messages"][1].content.split("\n")[-1].split("- Company ID: ")[-1]
 
     return {
-        "tovs": tovs,
-        "compliance_content": compliance_content,
-        "evps": evps,
-        "first_name": first_name,
-        "email": email,
-        "company_name": company_name,
-        "english_type": english_type
+        "company_id": company_id
     }
 
 
 def first_route(state: State):
-    if len(state["messages"]) <= 1:
+    if len(state["messages"]) <= 3:
         return "yes"
     elif state["messages"][-1].content == "/save_to_library":
         return "save_to_library"
@@ -49,7 +39,7 @@ def first_route(state: State):
 def tool_node(state: State):
     outputs = []
     for tool_call in state["messages"][-1].tool_calls:
-        tool_result = tools_by_name[tool_call["name"]].invoke(tool_call["args"])
+        tool_result = tools_by_name[tool_call["name"]].invoke(tool_call["args"], config={"configurable": {"company_id": state["company_id"]}})
         outputs.append(
             ToolMessage(
                 content=json.dumps(tool_result),
@@ -65,6 +55,9 @@ def call_model(
         state: State,
         config: RunnableConfig,
 ):
+    if len(state["messages"]) <= 3:
+        state["company_id"] = state["messages"][1].content.split("\n")[-1].split("- Company ID: ")[-1]
+        
     tool_model = model.bind_tools(tools)
     # this is similar to customizing the create_react_agent with 'prompt' parameter, but is more flexible
     system_prompt = SystemMessage(get_agent_system_message("employer_branding_mvp_v3")

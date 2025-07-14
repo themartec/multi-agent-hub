@@ -114,8 +114,9 @@ def get_company_info(token):
             response = response.json()
             first_name = response['data']['profile']['firstName']
             email = response['data']['profile']['email']
+            company_id = response['data']['profile']['company']['id']
             company_name = response['data']['profile']['company']['name']
-            return first_name, email, company_name
+            return first_name, email, company_id, company_name
         else:
             return {
                 "success": False,
