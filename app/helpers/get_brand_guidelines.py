@@ -37,6 +37,29 @@ class TheMartecSecret:
         bear_token = response.json()["data"]["token"]
         return bear_token
 
+    def get_token_platform_temp(self):
+        endpoint = "https://apidev.themartec.com/v1"
+        endpoint_csrf = f"{endpoint}/session/generate-csrf-token"
+        response = requests.request("GET",
+                                    endpoint_csrf,
+                                    headers={'Content-Type': 'application/json'})
+        assert response.status_code == 200, f"csrf token getting status code is {response.status_code}"
+        csrf_token = response.json()["data"]["token"]
+        assert csrf_token, f"csrf_token is empty"
+        payload = json.dumps(
+            {"email": settings.USER_NAME_DEV,
+             "password": settings.USER_PWD_DEV,
+             "allowSwitchAdvocate": "false",
+             "token": csrf_token
+             })
+        endpoint_login = f"{endpoint}/auth/login"
+        response = requests.request("POST",
+                                    endpoint_login,
+                                    headers={'Content-Type': 'application/json'},
+                                    data=payload)
+        assert response.status_code == 200, f"bear token getting status code is {response.status_code}"
+        bear_token = response.json()["data"]["token"]
+        return bear_token
 
 def get_brand_guidelines(token):
     url = "https://apiuat.themartec.com/v1/company/getBrandGuidelinesByCompanyId"
@@ -91,8 +114,9 @@ def get_company_info(token):
             response = response.json()
             first_name = response['data']['profile']['firstName']
             email = response['data']['profile']['email']
+            company_id = response['data']['profile']['company']['id']
             company_name = response['data']['profile']['company']['name']
-            return first_name, email, company_name
+            return first_name, email, company_id, company_name
         else:
             return {
                 "success": False,

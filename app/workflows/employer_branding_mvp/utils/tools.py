@@ -5,6 +5,7 @@ import time
 
 import requests
 from dotenv import load_dotenv
+from langchain_community.document_loaders import YoutubeLoader
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -14,7 +15,6 @@ from app.helpers.get_brand_guidelines import TheMartecSecret
 from app.schemas.models import OpenAIModelName
 from app.schemas.settings import EnglishStyle
 from youtube_transcript_api.proxies import WebshareProxyConfig
-
 from settings import settings
 
 load_dotenv()
@@ -120,11 +120,36 @@ def get_content(raw_url: str):
     return response.text
 
 
+def youtube_transcribe_by_langgraph(raw_url):
+    loader = YoutubeLoader.from_youtube_url(
+        raw_url, add_video_info=False,
+        language=["en", "ja"]
+    )
+    return loader.load()
+
+
+def youtube_transcribe_by_martec_api(raw_url):
+    endpoint = f"https://apidev.themartec.com/v1/content-scrape/transcript"
+    token = TheMartecSecret().get_token_platform_temp()
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f'Bearer {token}'
+    }
+    response = requests.post(endpoint, headers=headers, json={"url": raw_url})
+
+    return response.text
+
+
 @tool
 def get_content_from_url(raw_url: str):
     """Use this to crawl the content when user input the URL"""
     if 'youtube' in raw_url or 'youtu.be' in raw_url:
-        youtube_trans = youtube_transcribe(raw_url)
+        try:
+            youtube_trans = youtube_transcribe(raw_url)
+            print(f"youtube_trans 1: {youtube_trans}")
+        except:
+            youtube_trans = youtube_transcribe_by_langgraph(raw_url)
+            print(f"youtube_trans 2: {youtube_trans}")
         output_format = _format_youtube_description(_scrape_by_jina(raw_url))
         return f"**Video Transcript**:\n{youtube_trans}\n**Video Description**: {output_format}"
     else:
