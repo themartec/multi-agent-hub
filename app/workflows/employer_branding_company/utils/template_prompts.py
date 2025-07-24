@@ -220,5 +220,97 @@ Step 6: When user confirms the headline, proceed producing the final draft.
 - Format the final content into web-ready format so that user can select and copy paste easily.
 - Response """"Here's the final version. You can now save this article to your library.""""
 - Then, close the conversation with suggestion of next steps to distribute this article effectively (for example: Create a copy snippet for LinkedIn sharing, write a message to colleagues to share this articles, ..)"""
-    }
+    },
+    'story_interview': {
+        'description': "Generate a tailored set of prompts to help an employee share a meaningful story on a specific topic, through a video or written format.",
+        'instruction': """The user will provide:
+- Topic or content idea (e.g. "Learning Day", "Code-switching at work", "My career switch")
+- Preferred_format: Video or Written
+- Optional: The angle that the content should cover
+
+1. For Video Format:
+- Warm-up prompts (intro, context)
+- Main storytelling prompts
+- Emotional/reflection prompts
+- At least 03 B-roll or scene suggestions (natural, authentic visual cues)
+- 02 optional soundbite prompts for social clips
+
+2. For Written Format:
+- Opening question to guide the first paragraph
+- 2–3 narrative questions to guide structure and depth
+- One optional "quote-worthy" prompt to encourage a bold or inspiring line
+- Closing reflection or advice prompt
+
+3. Prompts should be friendly, open-ended, and relevant to the topic. Avoid jargon or robotic tone. Make it feel like an invitation to reflect, not a script to follow.
+4. When you surface each question, speak directly to the person answering it. Use guiding phrases to lead them through. In every prompt, frame it as an invitation to the reader, so they feel supported and guided through their responses.
+5. When presenting each prompt, output only the question text itself—no category headings, labels or quotation marks."""
+    },
+    "job_posting": {
+        'description': "Create compelling job descriptions that attract the right candidates. Highlight your company culture, growth opportunities, and what makes the role unique.",
+        'instruction': """User provides:
+- Job role and requirements
+- Company information and culture
+- Optional: specific benefits or unique selling points
+
+Output includes:
+- Compelling job title that stands out
+- Engaging opening that hooks the right candidates
+- Clear role responsibilities and requirements
+- Company culture and values integration
+- Growth and development opportunities
+- Benefits and perks (if provided)
+- Strong call-to-action to apply
+
+Requirements:
+- Make the role sound exciting and meaningful
+- Use inclusive language that welcomes diverse candidates
+- Balance professionalism with personality
+- Highlight what makes this opportunity unique
+- Keep formatting clean and scannable"""
+    },
+    'headline_generator': {
+        'description': "Generate 10–12 headline variations tailored to different audience types and channels, using data-backed best practices for SEO and social engagement.",
+        'instruction': """Output should include:
+1. A mix of styles: one bold, one curiosity-driven, one emotional, one keyword-rich
+2. 10 to 12 different variations in different styles. Provide at least one of each:
+- Bold/Direct: Clear and strong statement
+- Curiosity-Driven: Sparks intrigue without giving everything away
+- Emotional/Empathetic: Taps into the reader's feelings
+- Keyword-Rich (SEO-Optimized): Includes focus keyphrase and targets search queries
+
+3. Requirement:
+- Expand different ideas or content angles from the user provided keywords
+- Be 60 characters long or less, or use a shorter SEO title.
+- Be Audience and Channel aware, this input will be provided by the user.
+- Include your focus key phrase.
+- Include 1 or more power words.
+- Include a number when appropriate.
+- Take search intent into account.
+- Generate Title case heading"""},
+        'thought_leadership': {
+            'description': "Develop a compelling thought leadership article that establishes expertise and builds "
+                           "your brand.",
+            'instruction': """User provides:
+- Author information and credentials
+- Topic or main argument to develop
+- Supporting content, quotes, or research
+- Target audience and channel
+
+Output includes:
+- Compelling headline that positions the author as a thought leader
+- Strong opening that establishes credibility and hooks the reader
+- Well-structured argument with supporting evidence
+- Personal insights and unique perspectives
+- Professional tone that reflects industry expertise
+- Clear conclusion with actionable takeaways
+- SEO-optimized content for maximum reach
+
+Requirements:
+- Demonstrate deep industry knowledge
+- Include data, trends, or research where relevant
+- Balance authoritative tone with accessibility
+- Incorporate the author's unique voice and perspective
+- Structure for readability and engagement"""
+        }
+
 }

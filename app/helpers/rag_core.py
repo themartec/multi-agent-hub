@@ -23,11 +23,11 @@ class RAGCore:
             api_key=settings.OPENAI_API_KEY,
             model="text-embedding-3-large"
         )
-        self.chroma_client = chromadb.CloudClient(
-            api_key=settings.CHROMA_API_KEY,
-            tenant=settings.CHROMA_TENANT,
-            database=settings.CHROMA_DATABASE
-        )
+        # self.chroma_client = chromadb.CloudClient(
+        #     api_key=settings.CHROMA_API_KEY,
+        #     tenant=settings.CHROMA_TENANT,
+        #     database=settings.CHROMA_DATABASE
+        # )
         self.vector_store = None
 
     def process_document_list(self, documents: List[List], company_id: str, knowledge_graph_id: str) -> Chroma:
@@ -198,9 +198,9 @@ def query_documents(question: str, company_id: str, knowledge_graph_id: str):
     
     # Set up query engine
     query_engine.set_vector_store(vector_store)
-    
+
     # Process query
     print(f"\nQuestion: {question}")
     sources = query_engine.query(question)
-    
+
     return sources
