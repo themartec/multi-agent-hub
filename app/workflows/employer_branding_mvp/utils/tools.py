@@ -44,13 +44,13 @@ def _mapping_youtube(link: str):
 
 
 def youtube_transcribe(video_link: str):
-    # proxy_config = WebshareProxyConfig(
-    #     proxy_username=settings.PROXY_USER,
-    #     proxy_password=settings.PROXY_PWD,
-    # )
+    proxy_config = WebshareProxyConfig(
+        proxy_username=settings.PROXY_USER,
+        proxy_password=settings.PROXY_PWD,
+    )
 
     before_time = datetime.datetime.now()
-    ytt_api = YouTubeTranscriptApi()
+    ytt_api = YouTubeTranscriptApi(proxy_config=proxy_config)
     video_id = _mapping_youtube(video_link)
     print(f"video_id: {video_id}")
     transcript_list = ytt_api.list(video_id)
@@ -144,13 +144,19 @@ def youtube_transcribe_by_martec_api(raw_url):
 def get_content_from_url(raw_url: str):
     """Use this to crawl the content when user input the URL"""
     if 'youtube' in raw_url or 'youtu.be' in raw_url:
-        # try:
-        # youtube_trans = youtube_transcribe(raw_url)
-        # print(f"youtube_trans 1: {youtube_trans}")
-        # except:
-        youtube_trans = youtube_transcribe_by_langgraph(raw_url)
-        print(f"youtube_trans 2: {youtube_trans}")
+        try:
+            youtube_trans = youtube_transcribe(raw_url)
+            print(f"youtube_trans 1: {youtube_trans}")
+        except:
+            print("Youtube Transcribe Error")
+            try:
+                youtube_trans = youtube_transcribe_by_langgraph(raw_url)
+                print(f"youtube_trans 2: {youtube_trans}")
+            except:
+                print("Youtube LangGraph Transcribe Error")
+                youtube_trans = "Empty"
         output_format = _format_youtube_description(_scrape_by_jina(raw_url))
+
         return f"**Video Transcript**:\n{youtube_trans}\n**Video Description**: {output_format}"
     else:
         return _scrape_by_jina(raw_url)
