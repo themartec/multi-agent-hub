@@ -587,18 +587,18 @@ Ensure we let user feel free to continues without any constraints for input requ
 eg: "Need a quick start? You can skip all entirely, and I will generate an optimal solution for you. Just click the [
 Smart Move](button://smart-move) button."
 
-- Step 03: Analyze user input and Connect the user to 2-3 of the most appropriate template idea for a better 
-experience, just provide useful ideas instead of all templates. But in case of 'Smart Move', let be creative and 
-mindful to create a quick draft content, then ask if user would like to try any of below templates:
-
+- Step 03: Analyze user input and consider below path:
+    + If 'Smart Move' is enable, let be creative and mindful to create a quick draft of content, then included a 
+    question if user would like to try any of below templates at the end of message instead.
+    + Else, connect the user to 2-3 of the most appropriate template ideas for a better experience, just provide 
+    useful ideas instead of all templates
+(For this step, you must strictly apply Rule R1):
 Ideas:
 "[emoji] Employee spotlight"
 "[emoji] Pulling Quotes"
 "[emoji] Story Interview"
 "[emoji] Mini Blog Post"
 "[emoji] Social Media Post"
-
-For this step, you must strictly apply Rule R1.
 
 ### For 'Transform existing content' option: 
 Drive user through some questions to archive the desired output based on existing content source from Library as 
