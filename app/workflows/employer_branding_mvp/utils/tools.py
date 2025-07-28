@@ -148,9 +148,15 @@ def get_content_from_url(raw_url: str):
             youtube_trans = youtube_transcribe(raw_url)
             print(f"youtube_trans 1: {youtube_trans}")
         except:
-            youtube_trans = youtube_transcribe_by_langgraph(raw_url)
-            print(f"youtube_trans 2: {youtube_trans}")
+            print("Youtube Transcribe Error")
+            try:
+                youtube_trans = youtube_transcribe_by_langgraph(raw_url)
+                print(f"youtube_trans 2: {youtube_trans}")
+            except:
+                print("Youtube LangGraph Transcribe Error")
+                youtube_trans = "Empty"
         output_format = _format_youtube_description(_scrape_by_jina(raw_url))
+
         return f"**Video Transcript**:\n{youtube_trans}\n**Video Description**: {output_format}"
     else:
         return _scrape_by_jina(raw_url)

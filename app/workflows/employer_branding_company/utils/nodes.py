@@ -57,21 +57,21 @@ def call_model(
 ):
     if len(state["messages"]) <= 3:
         state["company_id"] = state["messages"][1].content.split("\n")[-1].split("- Company ID: ")[-1]
-        
+
     tool_model = model.bind_tools(tools)
     # this is similar to customizing the create_react_agent with 'prompt' parameter, but is more flexible
-    system_prompt = SystemMessage(get_agent_system_message("employer_branding_mvp_v3")
-    # .format(
-    #     eb_first_name=state['first_name'],
-    #     eb_email=state['email'],
-    #     company_name=state['company_name'],
-    #     company_tone=state['tovs'],
-    #     brand_compliance=state['compliance_content'],
-    #     company_evp=state['evps'],
-    #     english_type=state['english_type']
-    # )
-    # try:
-    )
+    system_prompt = SystemMessage(get_agent_system_message("employer_branding_mvp_v4")
+                                  # .format(
+                                  #     eb_first_name=state['first_name'],
+                                  #     eb_email=state['email'],
+                                  #     company_name=state['company_name'],
+                                  #     company_tone=state['tovs'],
+                                  #     brand_compliance=state['compliance_content'],
+                                  #     company_evp=state['evps'],
+                                  #     english_type=state['english_type']
+                                  # )
+                                  # try:
+                                  )
     # except:
     #     system_prompt = SystemMessage(get_agent_system_message("employer_branding_mvp_plus").format(
     #         eb_first_name="Test Admin",
