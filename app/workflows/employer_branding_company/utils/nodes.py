@@ -39,7 +39,7 @@ def first_route(state: State):
 def tool_node(state: State):
     outputs = []
     for tool_call in state["messages"][-1].tool_calls:
-        tool_result = tools_by_name[tool_call["name"]].invoke(tool_call["args"], config={"configurable": {"company_id": state["company_id"]}})
+        tool_result = tools_by_name[tool_call["name"]].invoke(tool_call["args"], config={"configurable": {"company_id": 'e8ddefa1-284b-40f9-955c-339a6a00eecf'}})
         outputs.append(
             ToolMessage(
                 content=json.dumps(tool_result),
@@ -56,7 +56,7 @@ def call_model(
         config: RunnableConfig,
 ):
     if len(state["messages"]) <= 3:
-        state["company_id"] = state["messages"][1].content.split("\n")[-1].split("- Company ID: ")[-1]
+        state["company_id"] = 'e8ddefa1-284b-40f9-955c-339a6a00eecf'#state["messages"][1].content.split("\n")[-1].split("- Company ID: ")[-1]
 
     tool_model = model.bind_tools(tools)
     # this is similar to customizing the create_react_agent with 'prompt' parameter, but is more flexible
