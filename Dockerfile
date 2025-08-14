@@ -9,7 +9,7 @@ ADD . /deps/multi-agent-hub
 # -- Installing all local dependencies --
 RUN PYTHONDONTWRITEBYTECODE=1 pip install --no-cache-dir -c /api/constraints.txt -e /deps/*
 # -- End of local dependencies install --
-ENV LANGSERVE_GRAPHS='{"react_agent": "/deps/multi-agent-hub/app/workflows/react_agent/agent.py:graph", "employer_branding_mvp": "/deps/multi-agent-hub/app/workflows/employer_branding_mvp/agent.py:workflow", "eb_form": "/deps/multi-agent-hub/app/workflows/eb_form_chat/main_graph.py:graph_form", "employer_branding_company": "/deps/multi-agent-hub/app/workflows/employer_branding_company/agent.py:workflow", "chat_agent_ec2": "/deps/multi-agent-hub/app/workflows/chat_agent_ec2/agent.py:workflow_ec2"}'
+ENV LANGSERVE_GRAPHS='{"react_agent": "/deps/multi-agent-hub/app/workflows/react_agent/agent.py:graph"}'
 
 
 
