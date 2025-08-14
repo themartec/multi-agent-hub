@@ -3,11 +3,7 @@
         "."
     ],
     "graphs": {
-        "react_agent": "./app/workflows/react_agent/agent.py:graph",
-        "employer_branding_mvp": "./app/workflows/employer_branding_mvp/agent.py:workflow",
-        "eb_form": "./app/workflows/eb_form_chat/main_graph.py:graph_form",
-        "employer_branding_company": "./app/workflows/employer_branding_company/agent.py:workflow",
-        "chat_agent_ec2": "./app/workflows/chat_agent_ec2/agent.py:workflow_ec2"
+        "react_agent": "./app/workflows/react_agent/agent.py:graph"
     },
-    "env": "environment/.dev.env"
+    "env": ".env"
 }
