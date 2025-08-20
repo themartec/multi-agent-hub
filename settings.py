@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     )
 
 
-def get_aws_secret(secret_name: str, region_name: str = "us-east-1"):
+def get_aws_secret(secret_name: str, region_name: str = "us-west-1"):
     """Get secret from AWS Secrets Manager"""
     try:
         client = boto3.client('secretsmanager', region_name=region_name)
