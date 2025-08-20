@@ -6,16 +6,20 @@ from functools import lru_cache
 class Settings(BaseSettings):
     OPENAI_API_KEY: str
     JINA_API_KEY: str
-    # LANGSMITH_API_KEY: str
-    AUTHEN_TOKEN: str
-    USER_PWD: str
-    USER_NAME: str
+    
+    LANGSMITH_TRACING: bool
+    LANGSMITH_ENDPOINT: str
+    LANGSMITH_API_KEY: str
+    LANGSMITH_PROJECT: str
+    
     PROXY_USER: str
     PROXY_PWD: str
-    BUILD_ENVIRONMENT: str
-    USER_NAME_DEV: str
-    USER_PWD_DEV: str
-    model_config = SettingsConfigDict(env_file=('.env', '.test.env', '.dev.env'), env_file_encoding='utf-8',
+    
+    POSTGRES_URI: str
+    REDIS_URI: str
+    IMAGE_NAME: str
+    
+    model_config = SettingsConfigDict(env_file=('.prod.env', '.env', '.test.env', '.dev.env'), env_file_encoding='utf-8',
                                       extra='ignore')
 
 
