@@ -15,7 +15,8 @@ dependencies = [
     "pydantic-settings==2.4.0",
     "langchain-chroma==0.2.3",
     "langchain-community==0.3.26",
-    "youtube-transcript-api==1.1.0"
+    "youtube-transcript-api==1.1.0",
+    "boto3"
 ]
 
 [dependency-groups]
